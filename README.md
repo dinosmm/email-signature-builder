@@ -4,7 +4,7 @@ A small single-page web app for generating Outlook-ready HTML email signatures. 
 
 ## Important tradeoffs
 
-This version is the static site itself: deploy the committed `public/` directory directly. That removes the Python build step.
+This version is the static site itself: deploy the committed `public/` directory directly. 
 
 There are two consequences to be aware of:
 
@@ -50,15 +50,9 @@ The postal address supports up to four lines. Put the school's actual JPG or PNG
 
 ## Run locally
 
-No build is required. Do **not** run a Python build script and do **not** look for a `scripts/build.py` file; the app is already in `public/`.
+No build is required. 
 
 Serve `public/` with any static web server. Python's built-in web server is only one convenient way to preview static files locally:
-
-```bash
-python3 -m http.server 8000 --directory public
-```
-
-Open <http://localhost:8000>.
 
 
 ## GitHub conflict guidance

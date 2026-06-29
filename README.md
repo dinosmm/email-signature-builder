@@ -4,7 +4,7 @@ A small single-page web app for generating Outlook-ready HTML email signatures. 
 
 ## Important tradeoffs
 
-This version is the static site itself: deploy the committed `public/` directory directly. That removes the Python build step.
+This version is the static site itself: deploy the committed `public/` directory directly. 
 
 There are two consequences to be aware of:
 
@@ -79,28 +79,25 @@ After cloning, continue with the configuration and deployment steps below.
 
 ## Configure the school defaults
 
-The single source of truth for default placeholder values is `public/defaults.js`. There is no separate `config/defaults.json` in this no-build static version; keeping the defaults in one browser-readable file avoids duplication and confusion.
+Edit `public/defaults.js` before deploying:
 
-Edit `public/defaults.js` before deploying to set:
+```js
+window.SIGNATURE_DEFAULTS = {
+  schoolAddress: ['Example School', '1 Learning Lane', 'Education Town', 'AB1 2CD'],
+  schoolTelephone: '+44 (0)1234 567890',
+  schoolWebsite: 'https://www.example-school.org',
+  schoolLogoPath: 'assets/school-logo.png',
+  schoolLogoAlt: 'Example School logo'
+};
+```
 
-- `schoolAddress` — up to four lines.
-- `schoolTelephone`.
-- `schoolWebsite`.
-- `schoolLogoPath` — the JPG or PNG logo path the browser should load.
-
-Put the school's actual JPG or PNG logo in `public/assets/` and update `schoolLogoPath` if you use a different filename.
+The postal address supports up to four lines. Put the school's actual JPG or PNG logo in `public/assets/` and update `schoolLogoPath` if you use a different filename.
 
 ## Run locally
 
-No build is required. Do **not** run a Python build script and do **not** look for a `scripts/build.py` file; the app is already in `public/`.
+No build is required. 
 
-Serve `public/` with any static web server. Python's built-in web server is only one convenient way to preview static files locally:
-
-```bash
-python3 -m http.server 8000 --directory public
-```
-
-Open <http://localhost:8000>.
+Serve `public/` with any static web server. 
 
 
 ## GitHub conflict guidance

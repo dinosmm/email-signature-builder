@@ -32,6 +32,51 @@ public/assets/README.md     # Instructions for adding the school logo
 deploy/nginx-email-signature-builder.conf # Example nginx server block
 ```
 
+
+## Get the project with git
+
+If you have not used git before, think of `git clone` as downloading a working copy of the project onto your server or laptop.
+
+1. Install git if it is not already installed. On Debian or Ubuntu:
+
+   ```bash
+   sudo apt update
+   sudo apt install git
+   ```
+
+2. Choose where you want to keep the app. For a server deployment, `/opt` is a common location:
+
+   ```bash
+   cd /opt
+   ```
+
+   On a laptop, you can use a normal projects folder instead, for example:
+
+   ```bash
+   mkdir -p ~/projects
+   cd ~/projects
+   ```
+
+3. Clone the repository. Replace the URL below with the actual GitHub repository URL if it differs:
+
+   ```bash
+   git clone https://github.com/your-organisation/email-signature-builder.git
+   ```
+
+4. Move into the project folder:
+
+   ```bash
+   cd email-signature-builder
+   ```
+
+5. Later, to download newer changes from GitHub, run this from inside the project folder:
+
+   ```bash
+   git pull
+   ```
+
+After cloning, continue with the configuration and deployment steps below.
+
 ## Configure the school defaults
 
 Edit `public/defaults.js` before deploying:

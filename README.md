@@ -1,12 +1,21 @@
 # Email Signature Builder
 
-A small single-page web app for generating Outlook-ready HTML email signatures. It uses plain HTML, CSS, and JavaScript only; there is no application backend, no npm dependency, no authentication, and no persistent user data.
+A small single-page web app for generating Outlook-ready HTML email signatures. It uses plain HTML, CSS, and JavaScript only; there is no application backend, no npm dependency, no authentication, no build step, and no persistent user data.
+
+## Important tradeoffs
+
+This version is the static site itself: deploy the committed `public/` directory directly. 
+
+There are two consequences to be aware of:
+
+1. **Editable defaults are web-accessible.** A browser-only static app can only read files that the web server serves, so `public/defaults.js` cannot be private. This is usually acceptable for a school address, telephone number, and website because those details are public-facing anyway. Keeping defaults outside the web root requires a build step, server-side template rendering, or a backend.
+2. **A real JPG/PNG logo file must be copied to the server.** The app references a normal image path, `public/assets/school-logo.png`, but this repository intentionally does not commit a binary image because the Codex PR flow reports “Binary files are not supported” when binary files are included. Deployers should copy their actual JPG/PNG logo into `public/assets/` and set the path in `public/defaults.js`.
 
 ## Features
 
 - Single-page signature builder UI.
 - Fields for display name, two job titles, school postal address, telephone number, work email, and school website.
-- Server-side source defaults stored in `config/defaults.json` and embedded into the generated static site by `scripts/build.py`.
+- Editable defaults in `public/defaults.js`.
 - Optional single JPG/PNG qualification logo upload, validated in the browser with a 500KB limit.
 - Outlook-friendly table-based signature output with a left details column, separator line, and vertically centred logo column.
 - Built with a simple structure that allows future signature formats to be added later.
@@ -14,46 +23,41 @@ A small single-page web app for generating Outlook-ready HTML email signatures. 
 ## Project structure
 
 ```text
-config/defaults.json        # Persistent school defaults, not served directly
-src/                        # Source HTML, CSS, JS, and text-encoded bundled school logo
-scripts/build.py            # Builds the deployable static site
-public/                     # Generated static web root for nginx (not committed)
+public/index.html           # Single-page UI
+public/styles.css           # Styling
+public/defaults.js          # Editable public defaults
+public/app.js               # Signature generator logic
+public/assets/README.md     # Instructions for adding the school logo
 
 deploy/nginx-email-signature-builder.conf # Example nginx server block
 ```
 
 ## Configure the school defaults
 
-Edit `config/defaults.json` before building:
+Edit `public/defaults.js` before deploying:
 
-```json
-{
-  "schoolAddress": ["Example School", "1 Learning Lane", "Education Town", "AB1 2CD"],
-  "schoolTelephone": "+44 (0)1234 567890",
-  "schoolWebsite": "https://www.example-school.org",
-  "schoolLogoAlt": "Example School logo"
-}
+```js
+window.SIGNATURE_DEFAULTS = {
+  schoolAddress: ['Example School', '1 Learning Lane', 'Education Town', 'AB1 2CD'],
+  schoolTelephone: '+44 (0)1234 567890',
+  schoolWebsite: 'https://www.example-school.org',
+  schoolLogoPath: 'assets/school-logo.png',
+  schoolLogoAlt: 'Example School logo'
+};
 ```
 
-The postal address supports up to four lines. Replace the bundled logo by base64-encoding the school's JPG or PNG into `src/assets/school-logo.png.b64`; the build script decodes it to `public/assets/school-logo.png` so the deployed app still serves a normal PNG file.
+The postal address supports up to four lines. Put the school's actual JPG or PNG logo in `public/assets/` and update `schoolLogoPath` if you use a different filename.
 
-## Build locally
+## Run locally
 
-Python 3 is required only to copy files and embed the private defaults into the generated static app.
+No build is required. 
 
-```bash
-./scripts/build.py
-```
+Serve `public/` with any static web server. Python's built-in web server is only one convenient way to preview static files locally:
 
-Then serve the generated `public/` directory with any static web server.
 
-For a quick local check:
+## GitHub conflict guidance
 
-```bash
-python3 -m http.server 8000 --directory public
-```
-
-Open <http://localhost:8000>.
+If GitHub shows a README conflict while merging this PR, do not choose by button label alone. Read both sides of the conflict and keep the text that says the app is served directly from `public/` and that there is **no build step**. Remove any old instructions that mention `scripts/build.py`, `config/defaults.json`, or generating `public/` before deployment. If GitHub offers “accept incoming changes” and the incoming side is this PR's no-build README, accepting incoming is correct; if the incoming side is the old build-script README, do not accept it wholesale.
 
 ## Debian deployment
 
@@ -66,18 +70,15 @@ Open <http://localhost:8000>.
 
 2. Copy this repository to the server, for example `/opt/email-signature-builder`.
 
-3. Edit `/opt/email-signature-builder/config/defaults.json` and replace `/opt/email-signature-builder/src/assets/school-logo.png.b64`.
+3. There is no build step. The nginx web root should point directly at `/opt/email-signature-builder/public`.
 
-4. Build the static site:
+4. Edit `/opt/email-signature-builder/public/defaults.js`.
 
-   ```bash
-   cd /opt/email-signature-builder
-   ./scripts/build.py
-   ```
+5. Copy the school's actual JPG or PNG logo to `/opt/email-signature-builder/public/assets/school-logo.png`, or update `schoolLogoPath` in `public/defaults.js` to match your filename.
 
-5. Configure nginx to serve only `/opt/email-signature-builder/public`. Do not point nginx at the repository root; this keeps `config/defaults.json` outside the web root.
+6. Configure nginx to serve `/opt/email-signature-builder/public` as the web root.
 
-6. Copy or adapt `deploy/nginx-email-signature-builder.conf` into `/etc/nginx/sites-available/email-signature-builder`, enable it, and reload nginx:
+7. Copy or adapt `deploy/nginx-email-signature-builder.conf` into `/etc/nginx/sites-available/email-signature-builder`, enable it, and reload nginx:
 
    ```bash
    sudo ln -s /etc/nginx/sites-available/email-signature-builder /etc/nginx/sites-enabled/email-signature-builder
@@ -85,12 +86,19 @@ Open <http://localhost:8000>.
    sudo systemctl reload nginx
    ```
 
-7. Add HTTPS using your normal certificate workflow, such as Certbot:
+8. Add HTTPS using your normal certificate workflow, such as Certbot:
 
    ```bash
    sudo apt install certbot python3-certbot-nginx
    sudo certbot --nginx -d signatures.example.org
    ```
+
+
+## nginx hardening note
+
+The sample nginx configuration is intentionally allow-list based: it serves only `/`, `/index.html`, `/styles.css`, `/defaults.js`, `/app.js`, and `/assets/school-logo.png`/`.jpg`/`.jpeg`. Everything else returns 404.
+
+A static browser app cannot hide files that the browser must load. In this app, `styles.css`, `defaults.js`, `app.js`, and the configured logo image are necessarily directly requestable by URL. To make defaults or logo assets inaccessible by direct URL while still rendering them in the app would require a build step that embeds them into the HTML, server-side rendering, or a backend/proxy endpoint.
 
 ## Privacy and data storage
 

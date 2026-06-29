@@ -7,6 +7,5 @@ window.SIGNATURE_DEFAULTS = {
   ],
   schoolTelephone: '+44 (0)1234 567890',
   schoolWebsite: 'https://www.example-school.org',
-  schoolLogoPath: 'assets/school-logo.png',
-  schoolLogoAlt: 'Example School logo'
+  schoolLogoPath: 'assets/school-logo.png'
 };

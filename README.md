@@ -97,7 +97,7 @@ The postal address supports up to four lines. Put the school's actual JPG or PNG
 
 No build is required. 
 
-Serve `public/` with any static web server. Python's built-in web server is only one convenient way to preview static files locally:
+Serve `public/` with any static web server. 
 
 
 ## GitHub conflict guidance

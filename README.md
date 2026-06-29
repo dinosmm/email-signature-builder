@@ -139,6 +139,32 @@ If GitHub shows a README conflict while merging this PR, do not choose by button
    ```
 
 
+
+## If updates do not appear after `git pull`
+
+If you can see new code on the server but the browser still shows the old signature output, it is almost always a cache issue. Try these in order:
+
+1. Hard-refresh the browser page:
+
+   - Windows/Linux: `Ctrl` + `F5`
+   - macOS: `Cmd` + `Shift` + `R`
+
+2. If nginx is serving the site, test and reload nginx after changing its configuration:
+
+   ```bash
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+
+3. Confirm the browser is loading the new files by opening these URLs directly and checking that they show the latest content:
+
+   ```text
+   https://your-site.example.org/app.js?v=20260629
+   https://your-site.example.org/styles.css?v=20260629
+   ```
+
+The sample `index.html` now uses versioned CSS/JS URLs, and the sample nginx configuration sets `Cache-Control: no-store` for the HTML, CSS, defaults, and app JavaScript files so future `git pull` updates are visible immediately after refresh.
+
 ## nginx hardening note
 
 The sample nginx configuration is intentionally allow-list based: it serves only `/`, `/index.html`, `/styles.css`, `/defaults.js`, `/app.js`, and `/assets/school-logo.png`/`.jpg`/`.jpeg`. Everything else returns 404.

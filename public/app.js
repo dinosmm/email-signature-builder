@@ -28,7 +28,7 @@ function buildSignature() {
     ...address.map(line => textRow(line)),
     textRow(data.get('schoolTelephone') ? `t: ${escapeHtml(data.get('schoolTelephone'))}` : ''),
     textRow(data.get('workEmail') ? `e: ${mailto(data.get('workEmail'))}` : ''),
-    textRow(website(data.get('schoolWebsite')))
+    textRow(data.get('schoolWebsite') ? `w: ${website(data.get('schoolWebsite'))}` : '')
   ].join('');
   const logo = `<img src="${escapeHtml(DEFAULTS.schoolLogoPath)}" alt="" role="presentation" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">`;
   const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';

@@ -48,6 +48,14 @@ function setDefaults() {
   form.schoolTelephone.value = DEFAULTS.schoolTelephone;
   form.schoolWebsite.value = DEFAULTS.schoolWebsite;
 }
+function resetToDefaults() {
+  form.reset();
+  qualificationDataUrl = '';
+  upload.value = '';
+  status.textContent = '';
+  setDefaults();
+  render();
+}
 upload.addEventListener('change', () => {
   status.textContent = '';
   qualificationDataUrl = '';
@@ -72,5 +80,5 @@ document.querySelector('#copySignature').addEventListener('click', async () => {
     htmlOutput.select(); document.execCommand('copy'); status.textContent = 'HTML copied. If Outlook needs rich formatting, copy from the preview instead.';
   }
 });
-document.querySelector('#resetDefaults').addEventListener('click', () => { setDefaults(); render(); });
+document.querySelector('#resetDefaults').addEventListener('click', resetToDefaults);
 setDefaults(); render();

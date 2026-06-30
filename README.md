@@ -159,8 +159,8 @@ If you can see new code on the server but the browser still shows the old signat
 3. Confirm the browser is loading the new files by opening these URLs directly and checking that they show the latest content:
 
    ```text
-   https://your-site.example.org/app.js?v=20260629
-   https://your-site.example.org/styles.css?v=20260629
+   https://your-site.example.org/app.js?v=20260630
+   https://your-site.example.org/styles.css?v=20260630
    ```
 
 The sample `index.html` now uses versioned CSS/JS URLs, and the sample nginx configuration sets `Cache-Control: no-store` for the HTML, CSS, defaults, and app JavaScript files so future `git pull` updates are visible immediately after refresh.

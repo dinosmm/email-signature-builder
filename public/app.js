@@ -18,17 +18,25 @@ function textRow(content, options = {}) {
   const size = options.size || '13px';
   return content ? `<div style="font-family:Arial,Helvetica,sans-serif;font-size:${size};line-height:18px;color:#1f2937;font-weight:${weight};">${content}</div>` : '';
 }
+function spacerRow() {
+  return '<div style="font-size:6px;line-height:6px;height:6px;mso-line-height-rule:exactly;">&nbsp;</div>';
+}
 function buildSignature() {
   const data = new FormData(form);
   const address = lines(data.get('schoolAddress'), 4).map(escapeHtml);
+  const contactRows = [
+    textRow(data.get('schoolTelephone') ? `t: ${escapeHtml(data.get('schoolTelephone'))}` : ''),
+    textRow(data.get('workEmail') ? `e: ${mailto(data.get('workEmail'))}` : ''),
+    textRow(data.get('schoolWebsite') ? `w: ${website(data.get('schoolWebsite'))}` : '')
+  ].filter(Boolean);
   const parts = [
     textRow(escapeHtml(data.get('displayName')), {weight: '700', size: '15px'}),
     textRow(escapeHtml(data.get('jobTitle1')), {weight: '700'}),
     textRow(escapeHtml(data.get('jobTitle2')), {weight: '700'}),
+    address.length ? spacerRow() : '',
     ...address.map(line => textRow(line)),
-    textRow(data.get('schoolTelephone') ? `t: ${escapeHtml(data.get('schoolTelephone'))}` : ''),
-    textRow(data.get('workEmail') ? `e: ${mailto(data.get('workEmail'))}` : ''),
-    textRow(data.get('schoolWebsite') ? `w: ${website(data.get('schoolWebsite'))}` : '')
+    address.length && contactRows.length ? spacerRow() : '',
+    ...contactRows
   ].join('');
   const logo = `<img src="${escapeHtml(DEFAULTS.schoolLogoPath)}" alt="" role="presentation" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">`;
   const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';

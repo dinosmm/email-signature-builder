@@ -13,6 +13,13 @@ function escapeHtml(value) {
 function lines(value, max) { return String(value || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean).slice(0, max); }
 function mailto(email) { const safe = escapeHtml(email); return safe ? `<a href="mailto:${safe}" style="color:#005387;text-decoration:none;">${safe}</a>` : ''; }
 function website(url) { const safe = escapeHtml(url); return safe ? `<a href="${safe}" style="color:#005387;text-decoration:none;">${safe.replace(/^https?:\/\//, '')}</a>` : ''; }
+function resolveAssetUrl(path) {
+  try {
+    return new URL(path, document.baseURI).href;
+  } catch (_) {
+    return path;
+  }
+}
 function textRow(content, weight='normal') { return content ? `<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#1f2937;font-weight:${weight};">${content}</div>` : ''; }
 function buildSignature() {
   const data = new FormData(form);
@@ -26,7 +33,8 @@ function buildSignature() {
     textRow(mailto(data.get('workEmail'))),
     textRow(website(data.get('schoolWebsite')))
   ].join('');
-  const logo = `<img src="assets/school-logo.png" alt="${escapeHtml(DEFAULTS.schoolLogoAlt)}" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">`;
+  const logoSrc = resolveAssetUrl(DEFAULTS.schoolLogoPath || 'assets/school-logo.png');
+  const logo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(DEFAULTS.schoolLogoAlt)}" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">`;
   const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="Additional qualification logo" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0 18px 0 0;vertical-align:top;">${parts}</td><td style="border-left:2px solid #c8d2dc;width:1px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0 0 0 18px;vertical-align:middle;text-align:center;">${logo}${qualification}</td></tr></table>`;
 }
@@ -35,6 +43,14 @@ function setDefaults() {
   form.schoolAddress.value = DEFAULTS.schoolAddress.join('\n');
   form.schoolTelephone.value = DEFAULTS.schoolTelephone;
   form.schoolWebsite.value = DEFAULTS.schoolWebsite;
+}
+function resetToDefaults() {
+  form.reset();
+  qualificationDataUrl = '';
+  upload.value = '';
+  status.textContent = '';
+  setDefaults();
+  render();
 }
 upload.addEventListener('change', () => {
   status.textContent = '';
@@ -60,5 +76,5 @@ document.querySelector('#copySignature').addEventListener('click', async () => {
     htmlOutput.select(); document.execCommand('copy'); status.textContent = 'HTML copied. If Outlook needs rich formatting, copy from the preview instead.';
   }
 });
-document.querySelector('#resetDefaults').addEventListener('click', () => { setDefaults(); render(); });
+document.querySelector('#resetDefaults').addEventListener('click', resetToDefaults);
 setDefaults(); render();

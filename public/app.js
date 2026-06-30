@@ -4,8 +4,8 @@ const form = document.querySelector('#signatureForm');
 const preview = document.querySelector('#preview');
 const htmlOutput = document.querySelector('#htmlOutput');
 const status = document.querySelector('#status');
-const upload = document.querySelector('#qualificationLogo');
-let qualificationDataUrl = '';
+const schoolLogoUpload = document.querySelector('#schoolLogo');
+let schoolLogoDataUrl = '';
 
 function escapeHtml(value) {
   return String(value || '').replace(/[&<>"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]));
@@ -45,10 +45,9 @@ function buildSignature() {
     address.length && contactRows.length ? spacerRow() : '',
     ...contactRows
   ].join('');
-  const logoSrc = resolveAssetUrl(DEFAULTS.schoolLogoPath);
-  const logo = `<img src="${escapeHtml(logoSrc)}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto 10px;">`;
-  const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';
-  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0 18px 0 0;vertical-align:top;">${parts}</td><td style="border-left:2px solid #c8d2dc;width:1px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0 0 0 18px;vertical-align:middle;text-align:center;">${logo}${qualification}</td></tr></table>`;
+  const logoSrc = schoolLogoDataUrl || resolveAssetUrl(DEFAULTS.schoolLogoPath);
+  const logo = `<img src="${escapeHtml(logoSrc)}" alt="" role="presentation" width="100" style="display:block;border:0;outline:none;text-decoration:none;max-width:100px;height:auto;margin:0 auto;">`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0 18px 0 0;vertical-align:top;">${parts}</td><td style="border-left:2px solid #c8d2dc;width:1px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0 0 0 18px;vertical-align:middle;text-align:center;">${logo}</td></tr></table>`;
 }
 function render() { const html = buildSignature(); preview.innerHTML = html; htmlOutput.value = html; }
 function setDefaults() {
@@ -58,24 +57,24 @@ function setDefaults() {
 }
 function resetToDefaults() {
   form.reset();
-  qualificationDataUrl = '';
-  upload.value = '';
+  schoolLogoDataUrl = '';
+  schoolLogoUpload.value = '';
   status.textContent = '';
   setDefaults();
   render();
 }
-upload.addEventListener('change', () => {
+schoolLogoUpload.addEventListener('change', () => {
   status.textContent = '';
-  qualificationDataUrl = '';
-  const file = upload.files[0];
+  schoolLogoDataUrl = '';
+  const file = schoolLogoUpload.files[0];
   if (!file) return render();
   if (!['image/jpeg','image/png'].includes(file.type) || file.size > MAX_UPLOAD_BYTES) {
-    upload.value = '';
+    schoolLogoUpload.value = '';
     status.innerHTML = '<span class="error">Please choose one JPG or PNG image up to 500KB.</span>';
     return render();
   }
   const reader = new FileReader();
-  reader.onload = event => { qualificationDataUrl = event.target.result; render(); };
+  reader.onload = event => { schoolLogoDataUrl = event.target.result; render(); };
   reader.readAsDataURL(file);
 });
 form.addEventListener('input', render);

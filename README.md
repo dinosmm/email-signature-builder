@@ -16,7 +16,7 @@ There are two consequences to be aware of:
 - Single-page signature builder UI.
 - Fields for display name, two job titles, school postal address, telephone number, work email, and school website.
 - Editable defaults in `public/defaults.js`.
-- Optional single JPG/PNG qualification logo upload, validated in the browser with a 500KB limit.
+- Optional single JPG/PNG school logo override, validated in the browser with a 500KB limit, while retaining the configured default logo.
 - Outlook-friendly table-based signature output with a left details column, separator line, and vertically centred logo column.
 - Built with a simple structure that allows future signature formats to be added later.
 
@@ -173,4 +173,4 @@ A static browser app cannot hide files that the browser must load. In this app, 
 
 ## Privacy and data storage
 
-The app does not write user input or uploaded images to disk. The optional qualification logo is read in the user's browser as a data URL and is embedded into the generated signature HTML only for that browser session.
+The app does not write user input or uploaded images to disk. The optional school logo override is read in the user's browser as a data URL and is embedded into the generated signature HTML only for that browser session. If no override is selected, the signature continues to use the default logo path from `public/defaults.js`.

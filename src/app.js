@@ -13,21 +13,43 @@ function escapeHtml(value) {
 function lines(value, max) { return String(value || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean).slice(0, max); }
 function mailto(email) { const safe = escapeHtml(email); return safe ? `<a href="mailto:${safe}" style="color:#005387;text-decoration:none;">${safe}</a>` : ''; }
 function website(url) { const safe = escapeHtml(url); return safe ? `<a href="${safe}" style="color:#005387;text-decoration:none;">${safe.replace(/^https?:\/\//, '')}</a>` : ''; }
-function textRow(content, weight='normal') { return content ? `<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#1f2937;font-weight:${weight};">${content}</div>` : ''; }
+function textRow(content, options = {}) {
+  const weight = options.weight || 'normal';
+  const size = options.size || '13px';
+  return content ? `<div style="font-family:Arial,Helvetica,sans-serif;font-size:${size};line-height:18px;color:#1f2937;font-weight:${weight};">${content}</div>` : '';
+}
+function spacerRow() {
+  return '<div style="font-size:6px;line-height:6px;height:6px;mso-line-height-rule:exactly;">&nbsp;</div>';
+}
+
+function resolveLogoPath(path) {
+  if (!path) return '';
+  try {
+    return new URL(path, window.location.origin + '/').href;
+  } catch (_) {
+    return path;
+  }
+}
 function buildSignature() {
   const data = new FormData(form);
   const address = lines(data.get('schoolAddress'), 4).map(escapeHtml);
+  const contactRows = [
+    textRow(data.get('schoolTelephone') ? `t: ${escapeHtml(data.get('schoolTelephone'))}` : ''),
+    textRow(data.get('workEmail') ? `e: ${mailto(data.get('workEmail'))}` : ''),
+    textRow(data.get('schoolWebsite') ? `w: ${website(data.get('schoolWebsite'))}` : '')
+  ].filter(Boolean);
   const parts = [
-    textRow(escapeHtml(data.get('displayName')), '700'),
-    textRow(escapeHtml(data.get('jobTitle1'))),
-    textRow(escapeHtml(data.get('jobTitle2'))),
+    textRow(escapeHtml(data.get('displayName')), {weight: '700', size: '15px'}),
+    textRow(escapeHtml(data.get('jobTitle1')), {weight: '700'}),
+    textRow(escapeHtml(data.get('jobTitle2')), {weight: '700'}),
+    address.length ? spacerRow() : '',
     ...address.map(line => textRow(line)),
-    textRow(escapeHtml(data.get('schoolTelephone'))),
-    textRow(mailto(data.get('workEmail'))),
-    textRow(website(data.get('schoolWebsite')))
+    address.length && contactRows.length ? spacerRow() : '',
+    ...contactRows
   ].join('');
-  const logo = `<img src="assets/school-logo.png" alt="${escapeHtml(DEFAULTS.schoolLogoAlt)}" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">`;
-  const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="Additional qualification logo" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';
+  const schoolLogoSrc = resolveLogoPath(DEFAULTS.schoolLogoPath);
+  const logo = schoolLogoSrc ? `<img src="${escapeHtml(schoolLogoSrc)}" alt="" role="presentation" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">` : '';
+  const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0 18px 0 0;vertical-align:top;">${parts}</td><td style="border-left:2px solid #c8d2dc;width:1px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0 0 0 18px;vertical-align:middle;text-align:center;">${logo}${qualification}</td></tr></table>`;
 }
 function render() { const html = buildSignature(); preview.innerHTML = html; htmlOutput.value = html; }

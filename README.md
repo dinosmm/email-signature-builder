@@ -24,10 +24,12 @@ There are two consequences to be aware of:
 
 ```text
 public/index.html           # Single-page UI
+public/outlook-web-guide.html # Outlook Web signature setup guide
 public/styles.css           # Styling
 public/defaults.js          # Editable public defaults
 public/app.js               # Signature generator logic
 public/assets/README.md     # Instructions for adding the school logo
+public/assets/outlook-guide/ # Guide screenshot assets
 
 deploy/nginx-email-signature-builder.conf # Example nginx server block
 ```
@@ -167,7 +169,7 @@ The sample `index.html` now uses versioned CSS/JS URLs, and the sample nginx con
 
 ## nginx hardening note
 
-The sample nginx configuration is intentionally allow-list based: it serves only `/`, `/index.html`, `/styles.css`, `/defaults.js`, `/app.js`, and `/assets/school-logo.png`/`.jpg`/`.jpeg`. Everything else returns 404.
+The sample nginx configuration is intentionally allow-list based: it serves only `/`, `/index.html`, `/outlook-web-guide.html`, `/styles.css`, `/defaults.js`, `/app.js`, `/assets/school-logo.png`/`.jpg`/`.jpeg`, and the Outlook guide screenshot SVGs. Everything else returns 404.
 
 A static browser app cannot hide files that the browser must load. In this app, `styles.css`, `defaults.js`, `app.js`, and the configured logo image are necessarily directly requestable by URL. To make defaults or logo assets inaccessible by direct URL while still rendering them in the app would require a build step that embeds them into the HTML, server-side rendering, or a backend/proxy endpoint.
 

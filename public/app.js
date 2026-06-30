@@ -38,7 +38,7 @@ function buildSignature() {
     address.length && contactRows.length ? spacerRow() : '',
     ...contactRows
   ].join('');
-  const logo = `<img src="${escapeHtml(DEFAULTS.schoolLogoPath)}" alt="" role="presentation" width="160" style="display:block;border:0;outline:none;text-decoration:none;max-width:160px;height:auto;margin:0 auto 10px;">`;
+  const logo = `<img src="${escapeHtml(DEFAULTS.schoolLogoPath)}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto 10px;">`;
   const qualification = qualificationDataUrl ? `<img src="${qualificationDataUrl}" alt="" role="presentation" width="110" style="display:block;border:0;outline:none;text-decoration:none;max-width:110px;height:auto;margin:0 auto;">` : '';
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0 18px 0 0;vertical-align:top;">${parts}</td><td style="border-left:2px solid #c8d2dc;width:1px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0 0 0 18px;vertical-align:middle;text-align:center;">${logo}${qualification}</td></tr></table>`;
 }

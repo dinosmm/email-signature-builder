@@ -1,4 +1,4 @@
-const DEFAULTS = __DEFAULTS__;
+const DEFAULTS = window.SIGNATURE_DEFAULTS;
 const MAX_UPLOAD_BYTES = 500 * 1024;
 const form = document.querySelector('#signatureForm');
 const preview = document.querySelector('#preview');

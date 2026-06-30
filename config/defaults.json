@@ -7,5 +7,6 @@
   ],
   "schoolTelephone": "+44 (0)1234 567890",
   "schoolWebsite": "https://www.example-school.org",
-  "schoolLogoAlt": "Example School logo"
+  "schoolLogoAlt": "Example School logo",
+  "schoolLogoPath": "assets/school-logo.png"
 }

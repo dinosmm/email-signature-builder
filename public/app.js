@@ -12,7 +12,17 @@ function escapeHtml(value) {
 }
 function lines(value, max) { return String(value || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean).slice(0, max); }
 function mailto(email) { const safe = escapeHtml(email); return safe ? `<a href="mailto:${safe}" style="color:#005387;text-decoration:none;">${safe}</a>` : ''; }
-function website(url) { const safe = escapeHtml(url); return safe ? `<a href="${safe}" style="color:#005387;text-decoration:none;">${safe.replace(/^https?:\/\//, '')}</a>` : ''; }
+function absoluteWebsiteUrl(url) {
+  const value = String(url || '').trim();
+  if (!value) return '';
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
+function website(url) {
+  const href = absoluteWebsiteUrl(url);
+  const safeHref = escapeHtml(href);
+  const safeDisplay = escapeHtml(href.replace(/^https?:\/\//i, ''));
+  return safeHref ? `<a href="${safeHref}" style="color:#005387;text-decoration:none;">${safeDisplay}</a>` : '';
+}
 function resolveAssetUrl(path) {
   try {
     return new URL(path, document.baseURI).href;

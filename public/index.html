@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Signature Builder</title>
+  <link rel="stylesheet" href="styles.css?v=20260630">
+</head>
+<body>
+  <header>
+    <h1>Email Signature Builder</h1>
+    <p class="lede">Create an Outlook-ready school email signature. Nothing is uploaded or stored by this app.</p>
+  </header>
+  <main class="grid">
+    <section class="panel" aria-labelledby="details-heading">
+      <h2 id="details-heading">Signature details</h2>
+      <form id="signatureForm">
+        <label>Display name <input name="displayName" autocomplete="name" placeholder="Mr M Bloggs" required></label>
+        <label>Job title 1 <input name="jobTitle1" placeholder="Teacher" required></label>
+        <label>Job title 2 <input name="jobTitle2" placeholder="Department lead"></label>
+        <label>School postal address <textarea name="schoolAddress" maxlength="240" aria-describedby="addressHint"></textarea><span id="addressHint" class="hint">Up to 4 lines. Defaults are loaded from the editable defaults file.</span></label>
+        <label>School telephone number <input name="schoolTelephone" type="tel"></label>
+        <label>Work email <input name="workEmail" type="email" placeholder="name@example-school.org" required></label>
+        <label>School website <input name="schoolWebsite" type="url"></label>
+        <label>Additional qualification logo <input id="qualificationLogo" type="file" accept="image/png,image/jpeg"><span class="hint">Optional. One JPG or PNG, maximum 500KB. The image stays in your browser.</span></label>
+      </form>
+      <div class="actions">
+        <button id="copySignature" type="button">Copy signature</button>
+        <button id="resetDefaults" class="secondary" type="button">Reset defaults</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+    <section class="panel" aria-labelledby="output-heading">
+      <h2 id="output-heading">Outlook-ready output</h2>
+      <p class="hint">Use “Copy signature” and paste directly into Outlook signature settings. The HTML is shown as a fallback for administrators.</p>
+      <div id="preview" class="preview-wrap" aria-label="Signature preview"></div>
+      <h3>Generated HTML</h3>
+      <textarea id="htmlOutput" readonly></textarea>
+    </section>
+  </main>
+  <script src="defaults.js?v=20260630"></script>
+  <script src="app.js?v=20260630"></script>
+</body>
+</html>

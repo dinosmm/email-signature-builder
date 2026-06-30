@@ -56,7 +56,7 @@ function buildSignature() {
     ...contactRows
   ].join('');
   const logoSrc = schoolLogoDataUrl || resolveAssetUrl(DEFAULTS.schoolLogoPath);
-  const logo = `<img src="${escapeHtml(logoSrc)}" alt="" role="presentation" width="100" style="display:block;border:0;outline:none;text-decoration:none;max-width:100px;height:auto;margin:0 auto;">`;
+  const logo = `<img src="${escapeHtml(logoSrc)}" alt="" role="presentation" width="100" style="display:block;border:0;outline:none;text-decoration:none;max-width:auto;width:120px;height:auto;margin:0 auto;">`;
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0 18px 0 0;vertical-align:top;">${parts}</td><td style="border-left:2px solid #c8d2dc;width:1px;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0 0 0 18px;vertical-align:middle;text-align:center;">${logo}</td></tr></table>`;
 }
 function render() { const html = buildSignature(); preview.innerHTML = html; htmlOutput.value = html; }
